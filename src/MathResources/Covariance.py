@@ -1,22 +1,19 @@
-from typing_extensions import Self
-
-
-class Covariance:
+class Covariance():
     
     def __init__(self) -> None:
         self.times = 10
         self.covariance = None
         self.covarianceAlternative = None
 
-    def calculate(self, generatedNums, average):
-        self.covariance = self.calculateCovariance(self, self.times, generatedNums, average)
+    def calculate(self, generatedNums):
+        self.covariance = self.calculateCovariance(self.times, generatedNums)
         return self.covariance
 
     def calculateAlternative(self, generatedNums, average):
         self.covarianceAlternative = self.calculateCovarianceAlternative(self, self.times, generatedNums, average)
         return self.covarianceAlternative
     
-    def calculateCovariance(times, generatedNums, average):
+    def calculateCovariance(self, times, generatedNums):
         sumX = 0
 
         for i in range(2, len(generatedNums)):
@@ -25,13 +22,14 @@ class Covariance:
         sumY = 0
 
         for i in range(2, len(generatedNums)):
-            sumY += generatedNums[i+1]
+            if(i < len(generatedNums) - 1):
+                sumY += generatedNums[i+1]
 
         averageX = sumX / times
         averageY = sumY / times
   
-        valueX
-        valueY
+        valueX = 0
+        valueY = 0
         value = 0
 
         for i in range(0, len(generatedNums), 2):
@@ -63,13 +61,13 @@ class Covariance:
         return covarianceAlternative
     
     def print(self):
-        print('\nCovariancia: ' + self.covariance)
+        print(f"\nCovariancia: {self.covariance}")
     
     def printAlternative(self):
-        print('\nCovariancia: ' + self.covarianceAlternative)
+        print(f"\nCovariancia: {self.covarianceAlternative}")
 
     def printResult(self):
-        print('\nCovariancia: ' + self.covariance)
+        print(f"\nCovariancia: {self.covariance}")
 
     def setTimes(self, times):
         self.times = times

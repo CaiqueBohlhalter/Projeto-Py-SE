@@ -1,6 +1,6 @@
 import math
 
-class StandardDeviaton:
+class StandardDeviaton():
     
     def __init__(self) -> None:
       self.times = 10
@@ -21,7 +21,7 @@ class StandardDeviaton:
         return self.standardDeviation
 
     def printResult(self):
-        print("\nDesvio Padrão: " + self.standardDeviation)
+        print(f"\nDesvio Padrão: {self.standardDeviation}")
 
     def setTimes(self, times):
         self.times = times

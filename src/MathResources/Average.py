@@ -1,4 +1,4 @@
-class Average:
+class Average():
     
     def __init__(self) -> None:
       self.times = 10
@@ -17,7 +17,9 @@ class Average:
         return self.average
 
     def printResult(self):
-        print("\nMédia: " + self.average)
+        #print("\nMédia: " + str(self.average))
+        print(f"\nMédia: {self.average}" )
+
 
     def setTimes(self, times):
         self.times = times

@@ -1,5 +1,5 @@
 
-class Gerador:
+class Gerador():
 
   def __init__(self) -> None:
     self.size = 10
@@ -8,7 +8,7 @@ class Gerador:
     self.constant =  16807
     self.generatedValues = []
 
-  def generate (self):
+  def generate(self):
     self.generatedValues = [0 for i in range(self.size)]
     self.generateValue(self.seed, self.mod, self.constant)
   

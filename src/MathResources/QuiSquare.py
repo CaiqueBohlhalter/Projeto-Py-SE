@@ -1,6 +1,6 @@
 import math
 
-class QuiSquare:
+class QuiSquare():
 
     def __init__(self) -> None:
       self.intervals = 10
@@ -14,8 +14,8 @@ class QuiSquare:
         return self.calculateQuiSquare(self.times, generatedNums)
 
     def calculateQuiSquare(self, times, generatedNums):
-        isCondition1
-        isCondition2
+        isCondition1 = False
+        isCondition2 = False
         counter = 0
 
         for i in range(self.intervals):
@@ -36,8 +36,7 @@ class QuiSquare:
         return mod
 
     def printResult(self):
-        print("\nQui-Quadrado: " + self.quiSquare)
-
+        print(f"\nQui-Quadrado: {self.quiSquare}" )
 
     def setTimes(self, times):
         self.times = times
