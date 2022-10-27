@@ -4,6 +4,7 @@ from Gerador import Gerador
 from MathResources.Tec import Tec
 from MathResources.Ts import Ts
 from ImprimirDados import ImprimirDados
+from MathResources.Average import Average
 
 # -- Constantes
 QUANTIDADE_DE_CLIENTES = 5
@@ -17,6 +18,10 @@ tempoFimServiço = []
 tempoFila = []
 tempoNoSistema = []
 tempoLivre = []
+
+mediaEsperaFila = Average()
+mediaTempoServiço = Average()
+mediaTempoNoSistema = Average()
 
 imprimir = ImprimirDados()
 
@@ -89,6 +94,19 @@ def calculaTempos():
   calculaTempoNoSistema()
   calculaTempoLivre()
 
+# -- Obtem valores das médias
+def calculaMedias():
+  mediaEsperaFila.setTimes(QUANTIDADE_DE_CLIENTES)
+  mediaTempoServiço.setTimes(QUANTIDADE_DE_CLIENTES)
+  mediaTempoNoSistema.setTimes(QUANTIDADE_DE_CLIENTES)
+  
+  mediaEsperaFila.calculate(tempoFila)
+  mediaTempoServiço.calculate(tsArray)
+  mediaTempoNoSistema.calculate(tempoNoSistema)
+
+def calculaProbabilidadeCaixaLivre():
+  somaTempoLivre = sum(tempoLivre)
+  return somaTempoLivre/tempoFimServiço[QUANTIDADE_DE_CLIENTES]  
 
 ##--------------------MAIN--------------------##
 
@@ -102,4 +120,9 @@ tsArray = geradorTs(values, CONST_A, CONST_B)
 calculaTempos()
 
 imprimir.printTempos(tecArray, tsArray, tempoChegada, tempoInicioServiço, tempoFimServiço, tempoFila, tempoNoSistema, tempoLivre, QUANTIDADE_DE_CLIENTES)
- 
+
+calculaMedias()
+
+imprimir.printMedias(mediaEsperaFila.getValue(), mediaTempoServiço.getValue(), mediaTempoNoSistema.getValue())
+
+
