@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from Gerador import Gerador
+from ValueGenerators.Gerador import Gerador
 from MathResources.Tec import Tec
 from MathResources.Ts import Ts
 from ImprimirDados import ImprimirDados
@@ -144,7 +144,3 @@ class Simulador:
 
   def getMediaTempoNoSistema(self):
     return self.mediaTempoNoSistema
-
-
-
-
