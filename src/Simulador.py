@@ -6,123 +6,145 @@ from MathResources.Ts import Ts
 from ImprimirDados import ImprimirDados
 from MathResources.Average import Average
 
-# -- Constantes
-QUANTIDADE_DE_CLIENTES = 5
-CONST_A = 15
-CONST_B = 35
+class Simulador:
 
-# -- Valores a serem obtidos
-tempoChegada = []
-tempoInicioServiço = []
-tempoFimServiço = []
-tempoFila = []
-tempoNoSistema = []
-tempoLivre = []
+  def __init__(self) -> None:
+    # -- Constantes
+    self.QUANTIDADE_DE_CLIENTES = 11
+    self.CONST_A = 15
+    self.CONST_B = 35
 
-mediaEsperaFila = Average()
-mediaTempoServiço = Average()
-mediaTempoNoSistema = Average()
+    # -- Valores a serem obtidos
+    self.tempoChegada = []
+    self.tempoInicioServiço = []
+    self.tempoFimServiço = []
+    self.tempoFila = []
+    self.tempoNoSistema = []
+    self.tempoLivre = []
 
-imprimir = ImprimirDados()
+    self.mediaEsperaFila = Average()
+    self.mediaTempoServiço = Average()
+    self.mediaTempoNoSistema = Average()
 
-# -- Gerador de valores aleatórios orientado a quantidade
-def gerador():
-  gerador = Gerador()
-  gerador.setSize(QUANTIDADE_DE_CLIENTES * 2)
-  gerador.generate()
-  generated_values = gerador.getGeneratedValues()
-  return generated_values
+    self.imprimir = ImprimirDados()
 
-# -- Gerador de valores de tempo entre clientes
-def geradorTec(values):
-  tec = Tec()
-  return tec.calculate(values)
+    self.tecArray = []
+    self.tsArray = []
 
-# -- Gerador de valores de tempo de serviço
-def geradorTs(values, a, b):
-  ts = Ts()
-  return ts.calculate(values, a, b)
+  def simular(self):
+    # -- Obtem Valores Aleatorios
+    values = self.gerador()
 
-# -- Define Inicio e término de cada serviço para cada cliente
-def calculaTempoServiço():
-  # --  Define estáticamente os valores do primeiro cliente
-  tempoInicioServiço.append(tempoChegada[0])
-  tempoFimServiço.append(tempoInicioServiço[0] + tsArray[0])
+    # -- Obtem Tec e Ts baseado nos valores aleatórios
+    self.tecArray = self.geradorTec(values)
+    self.tsArray = self.geradorTs(values, self.CONST_A, self.CONST_B)
 
-  # --  Define dinamicamente os valores dos demais clientes
-  for i in range(1, QUANTIDADE_DE_CLIENTES):
-    tempoInicioServiço.append(tempoFimServiço[i-1])
-    tempoFimServiço.append(tempoInicioServiço[i] + tsArray[i])
+    self.calculaTempos()
+    self.imprimir.printTempos(self.tecArray, self.tsArray, self.tempoChegada, self.tempoInicioServiço, 
+      self.tempoFimServiço, self.tempoFila, self.tempoNoSistema, self.tempoLivre, self.QUANTIDADE_DE_CLIENTES)
 
-# -- Calcula os tempos de chegada dos clientes
-def calculaTempoChegada():
-  # -- Atribui ao primeiro cliente o primeiro momento com cliente
-  tempoChegada.append(tecArray[0])
+    self.calculaMedias()
+    self.imprimir.printMedias(self.mediaEsperaFila.getValue(), self.mediaTempoServiço.getValue(), 
+      self.mediaTempoNoSistema.getValue(), self.calculaProbabilidadeCaixaLivre())
 
-  for i in range(1, QUANTIDADE_DE_CLIENTES):
-    tempoChegada.append(tempoChegada[i-1] + tecArray[i]) 
+  # -- Gerador de valores aleatórios orientado a quantidade
+  def gerador(self):
+    gerador = Gerador()
+    gerador.setSize(self.QUANTIDADE_DE_CLIENTES * 2)
+    gerador.generate()
+    generated_values = gerador.getGeneratedValues()
+    return generated_values
 
-# -- Calcula o tempo que cada cliente esperou na fila
-def calculaTempoNaFila():
-  # -- Primeiro cliente não pegou fila
-  tempoFila.append(0)
+  # -- Gerador de valores de tempo entre clientes
+  def geradorTec(self, values):
+    tec = Tec()
+    return tec.calculate(values)
 
-  for i in range(1, QUANTIDADE_DE_CLIENTES):
-    tempoFila.append(tempoInicioServiço[i] - tempoChegada[i])
+  # -- Gerador de valores de tempo de serviço
+  def geradorTs(self, values, a, b):
+    ts = Ts()
+    return ts.calculate(values, a, b)
 
-# -- Calcula o tempo que cada cliente passou dentro do estabelecimento
-def calculaTempoNoSistema():
-  for i in range(QUANTIDADE_DE_CLIENTES):
-    tempoNoSistema.append(tempoFila[i] + tsArray[i])
+  # -- Define Inicio e término de cada serviço para cada cliente
+  def calculaTempoServiço(self):
+    # --  Define estáticamente os valores do primeiro cliente
+    self.tempoInicioServiço.append(self.tempoChegada[0])
+    self.tempoFimServiço.append(self.tempoInicioServiço[0] + self.tsArray[0])
 
-# -- Calcula o tempo que o sistema esteve livre
-def calculaTempoLivre():
-  # -- Tempo livre até o primeiro cliente chegar
-  tempoLivre.append(tecArray[0])
+    # --  Define dinamicamente os valores dos demais clientes
+    for i in range(1, self.QUANTIDADE_DE_CLIENTES):
+      self.tempoInicioServiço.append(self.tempoFimServiço[i-1])
+      self.tempoFimServiço.append(self.tempoInicioServiço[i] + self.tsArray[i])
 
-  for i in range(1, QUANTIDADE_DE_CLIENTES):
-    if(tempoFila[i] == 0):
-      tempoLivre.append(tempoInicioServiço[i] - tempoFimServiço[i-1])
-    else:
-      tempoLivre.append(0)
+  # -- Calcula os tempos de chegada dos clientes
+  def calculaTempoChegada(self):
+    # -- Atribui ao primeiro cliente o primeiro momento com cliente
+    self.tempoChegada.append(self.tecArray[0])
 
-# -- Obtem valores dos tempos analisados
-def calculaTempos():
-  calculaTempoChegada()
-  calculaTempoServiço()
-  calculaTempoNaFila()
-  calculaTempoNoSistema()
-  calculaTempoLivre()
+    for i in range(1, self.QUANTIDADE_DE_CLIENTES):
+      self.tempoChegada.append(self.tempoChegada[i-1] + self.tecArray[i]) 
 
-# -- Obtem valores das médias
-def calculaMedias():
-  mediaEsperaFila.setTimes(QUANTIDADE_DE_CLIENTES)
-  mediaTempoServiço.setTimes(QUANTIDADE_DE_CLIENTES)
-  mediaTempoNoSistema.setTimes(QUANTIDADE_DE_CLIENTES)
-  
-  mediaEsperaFila.calculate(tempoFila)
-  mediaTempoServiço.calculate(tsArray)
-  mediaTempoNoSistema.calculate(tempoNoSistema)
+  # -- Calcula o tempo que cada cliente esperou na fila
+  def calculaTempoNaFila(self):
+    # -- Primeiro cliente não pegou fila
+    self.tempoFila.append(0)
 
-def calculaProbabilidadeCaixaLivre():
-  somaTempoLivre = sum(tempoLivre)
-  return somaTempoLivre/tempoFimServiço[QUANTIDADE_DE_CLIENTES]  
+    for i in range(1, self.QUANTIDADE_DE_CLIENTES):
+      self.tempoFila.append(self.tempoInicioServiço[i] - self.tempoChegada[i])
 
-##--------------------MAIN--------------------##
+  # -- Calcula o tempo que cada cliente passou dentro do estabelecimento
+  def calculaTempoNoSistema(self):
+    for i in range(self.QUANTIDADE_DE_CLIENTES):
+      self.tempoNoSistema.append(self.tempoFila[i] + self.tsArray[i])
 
-# -- Obtem Valores Aleatorios
-values = gerador()
+  # -- Calcula o tempo que o sistema esteve livre
+  def calculaTempoLivre(self):
+    # -- Tempo livre até o primeiro cliente chegar
+    self.tempoLivre.append(self.tecArray[0])
 
-# -- Obtem Tec e Ts baseado nos valores aleatórios
-tecArray = geradorTec(values)
-tsArray = geradorTs(values, CONST_A, CONST_B)
+    for i in range(1, self.QUANTIDADE_DE_CLIENTES):
+      if(self.tempoFila[i] == 0):
+        self.tempoLivre.append(self.tempoInicioServiço[i] - self.tempoFimServiço[i-1])
+      else:
+        self.tempoLivre.append(0)
 
-calculaTempos()
+  # -- Obtem valores dos tempos analisados
+  def calculaTempos(self):
+    self.calculaTempoChegada()
+    self.calculaTempoServiço()
+    self.calculaTempoNaFila()
+    self.calculaTempoNoSistema()
+    self.calculaTempoLivre()
 
-imprimir.printTempos(tecArray, tsArray, tempoChegada, tempoInicioServiço, tempoFimServiço, tempoFila, tempoNoSistema, tempoLivre, QUANTIDADE_DE_CLIENTES)
+  # -- Obtem valores das médias
+  def calculaMedias(self):
+    self.mediaEsperaFila.setTimes(self.QUANTIDADE_DE_CLIENTES)
+    self.mediaTempoServiço.setTimes(self.QUANTIDADE_DE_CLIENTES)
+    self.mediaTempoNoSistema.setTimes(self.QUANTIDADE_DE_CLIENTES)
+    
+    self.mediaEsperaFila.calculate(self.tempoFila)
+    self.mediaTempoServiço.calculate(self.tsArray)
+    self.mediaTempoNoSistema.calculate(self.tempoNoSistema)
 
-calculaMedias()
+  # -- Obtem a probabilidade do caixa estar livre
+  def calculaProbabilidadeCaixaLivre(self):
+    somaTempoLivre = sum(self.tempoLivre)
+    return somaTempoLivre/self.tempoFimServiço[self.QUANTIDADE_DE_CLIENTES - 1] 
 
-imprimir.printMedias(mediaEsperaFila.getValue(), mediaTempoServiço.getValue(), mediaTempoNoSistema.getValue())
+  # -- Determina quantidade de clientes da simulação
+  def setQuantidadeClientes(self, clientes):
+    self.QUANTIDADE_DE_CLIENTES = clientes
+
+  # -- Retornar Médias calculadas na simulação
+  def getMediaEsperaFila(self):
+    return self.mediaEsperaFila
+
+  def getMediaTempoServiço(self):
+    return self.mediaTempoServiço
+
+  def getMediaTempoNoSistema(self):
+    return self.mediaTempoNoSistema
+
+
 
 

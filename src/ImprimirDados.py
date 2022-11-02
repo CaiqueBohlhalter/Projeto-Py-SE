@@ -16,10 +16,12 @@ class ImprimirDados():
       self.printTempoNoSistema(tempoSistema, i)
       self.printTempoLivre(tempoLivre, i)
 
-  def printMedias(self, mediaEsperaFila, mediaTempoServiço, mediaTempoNoSistema):
+  def printMedias(self, mediaEsperaFila, mediaTempoServiço, mediaTempoNoSistema, probabilidadeCaixaLivre):
+    print(f"****************************** RESULTADOS ******************************")
     print(f"Média na Espera Fila: {mediaEsperaFila}")
     print(f"Média do Tempo de Serviço: {mediaTempoServiço}")
     print(f"Média de Tempo no Sistema: {mediaTempoNoSistema}")
+    print(f"Probabilidade do caixa estar livre: {round(probabilidadeCaixaLivre*100, 2)} %")
   
 
   def printTec(self, tec, i):
@@ -45,6 +47,7 @@ class ImprimirDados():
 
   def printTempoLivre(self, tempoLivre, i):
     print(f"TLV: {tempoLivre[i]} " ) 
+  
 
     
     
