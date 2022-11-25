@@ -31,6 +31,9 @@ class Simulador:
     self.tecArray = []
     self.tsArray = []
 
+    self.printTempos = True
+    self.printMedias = True
+
   def simular(self):
     # -- Obtem Valores Aleatorios
     values = self.gerador()
@@ -40,12 +43,14 @@ class Simulador:
     self.tsArray = self.geradorTs(values, self.CONST_A, self.CONST_B)
 
     self.calculaTempos()
-    self.imprimir.printTempos(self.tecArray, self.tsArray, self.tempoChegada, self.tempoInicioServiço, 
-      self.tempoFimServiço, self.tempoFila, self.tempoNoSistema, self.tempoLivre, self.QUANTIDADE_DE_CLIENTES)
+    if(self.printTempos):
+      self.imprimir.printTempos(self.tecArray, self.tsArray, self.tempoChegada, self.tempoInicioServiço, 
+        self.tempoFimServiço, self.tempoFila, self.tempoNoSistema, self.tempoLivre, self.QUANTIDADE_DE_CLIENTES)
 
     self.calculaMedias()
-    self.imprimir.printMedias(self.mediaEsperaFila.getValue(), self.mediaTempoServiço.getValue(), 
-      self.mediaTempoNoSistema.getValue(), self.calculaProbabilidadeCaixaLivre())
+    if(self.printMedias):
+      self.imprimir.printMedias(self.mediaEsperaFila.getValue(), self.mediaTempoServiço.getValue(), 
+        self.mediaTempoNoSistema.getValue(), self.calculaProbabilidadeCaixaLivre())
 
   # -- Gerador de valores aleatórios orientado a quantidade
   def gerador(self):
@@ -144,3 +149,10 @@ class Simulador:
 
   def getMediaTempoNoSistema(self):
     return self.mediaTempoNoSistema
+
+  def setPrintTempos(self, bool):
+    self.printTempos = bool
+
+  def setPrintMedias(self, bool):
+    self.printMedias = bool
+  

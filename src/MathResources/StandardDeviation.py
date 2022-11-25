@@ -6,7 +6,6 @@ class StandardDeviaton():
       self.times = 10
       self.standardDeviation = None
         
-
     def calculate(self, generatedNums, average):
         return self.calculateStandardDeviation(self.times, generatedNums, average)
 

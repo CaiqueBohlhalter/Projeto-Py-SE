@@ -16,6 +16,3 @@ class Tec():
       self.tecArray.append(-20 * (ln(generatedNums[i]))) 
 
     return self.tecArray
- 
-
-
